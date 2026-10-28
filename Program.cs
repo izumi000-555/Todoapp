@@ -5,8 +5,8 @@ class Program
 {
     static void Main(string[] args)
     {
-        // Problems 3
-        // Remove a task by its number.
+        // Problems 4
+        // Check empty task names and invalid task numbers.
         List<string> tasks = new List<string>();
         string choice = string.Empty;
 
@@ -23,21 +23,56 @@ class Program
             {
                 case "1":
                     Console.Write("Please enter the task name: ");
-                    tasks.Add(Console.ReadLine());
+                    string task = Console.ReadLine();
+                    if (string.IsNullOrWhiteSpace(task))
+                    {
+                        Console.WriteLine("Task name cannot be empty.");
+                    }
+                    else
+                    {
+                        tasks.Add(task.Trim());
+                        Console.WriteLine("Task added.");
+                    }
                     break;
 
                 case "2":
-                    for (int i = 0; i < tasks.Count; i++)
+                    if (tasks.Count == 0)
                     {
-                        Console.WriteLine($"{i + 1}. {tasks[i]}");
+                        Console.WriteLine("No tasks yet.");
+                    }
+                    else
+                    {
+                        for (int i = 0; i < tasks.Count; i++)
+                        {
+                            Console.WriteLine($"{i + 1}. {tasks[i]}");
+                        }
                     }
                     break;
 
                 case "3":
-                    Console.Write("Please enter the task number: ");
-                    int number = Convert.ToInt32(Console.ReadLine());
-                    tasks.RemoveAt(number - 1);
-                    Console.WriteLine("Task removed.");
+                    if (tasks.Count == 0)
+                    {
+                        Console.WriteLine("No tasks yet.");
+                    }
+                    else
+                    {
+                        Console.Write("Please enter the task number: ");
+                        string input = Console.ReadLine();
+                        int number;
+                        if (!int.TryParse(input, out number))
+                        {
+                            Console.WriteLine("Please enter a valid number.");
+                        }
+                        else if (number < 1 || number > tasks.Count)
+                        {
+                            Console.WriteLine("Task number does not exist.");
+                        }
+                        else
+                        {
+                            tasks.RemoveAt(number - 1);
+                            Console.WriteLine("Task removed.");
+                        }
+                    }
                     break;
 
                 case "4":
