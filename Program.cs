@@ -5,8 +5,9 @@ class Program
 {
     static void Main(string[] args)
     {
-        // Problems 1
-        // Display a menu until 4 is entered.
+        // Problems 2
+        // Add tasks and display them with numbers.
+        List<string> tasks = new List<string>();
         string choice = string.Empty;
 
         do
@@ -21,7 +22,17 @@ class Program
             switch (choice)
             {
                 case "1":
+                    Console.Write("Please enter the task name: ");
+                    tasks.Add(Console.ReadLine());
+                    break;
+
                 case "2":
+                    for (int i = 0; i < tasks.Count; i++)
+                    {
+                        Console.WriteLine($"{i + 1}. {tasks[i]}");
+                    }
+                    break;
+
                 case "3":
                     Console.WriteLine("Not ready yet.");
                     break;
