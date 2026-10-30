@@ -37,7 +37,24 @@ class Item
     }
 }
 
+class Book
+{
+    public string Title { get; set; } = "";
+    public string Author { get; set; } = "";
+    public int Year { get; set; }
 
+    public Book(string title, string author, int year)
+    {
+        Title = title;
+        Author = author;
+        Year = year;
+    }
+
+    public string Display()
+    {
+        return $"Title: {Title}  Author: {Author} -  Publication year: {Year}";
+    }
+}
 
 class Program
 {
@@ -45,6 +62,9 @@ class Program
     {
         List<Item> tasks = new List<Item>();
         string choice = string.Empty;
+        List<Book> books = new List<Book>();
+        BookInfo(books);
+        BookDisplay(books);
 
         do
         {
@@ -212,5 +232,22 @@ class Program
         }
         }
         
+    }
+
+    //problem3
+    static void BookInfo(List<Book> books)
+    {
+        books.Add(new Book("A Woman", "Takeo Arisima", 1919));
+        books.Add(new Book("L'après-midi d'un faune", "Stéphane Mallarmé", 1876));
+        books.Add(new Book("Night on the Galactic Railroad", "Kenzi Miyazawa", 1934));
+        
+    }
+
+    static void BookDisplay(List<Book> books)
+    {
+        foreach (Book book in books)
+        {
+            Console.WriteLine(book.Display());
+        }
     }
 }
