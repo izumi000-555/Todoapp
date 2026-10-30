@@ -1,14 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 
-class Item
+class TodoItem
 {
-    public string Task { get; set; } = "";
+    public string Title { get; set; } = "";
     public bool IsDone { get; set; }
 
-    public Item(string task)
+    public TodoItem(string task)
     {
-        Task = task;
+        Title = task;
         IsDone = false;
     }
 
@@ -26,14 +26,14 @@ class Item
     {
         if (IsDone)
         {
-            return $"[x] {Task}";
+            return $"[x] {Title}";
         }
-        return $"[ ] {Task}";
+        return $"[ ] {Title}";
     }
 
     public void Rename(string title)
     {
-        Task = title;
+        Title = title;
     }
 }
 
@@ -52,7 +52,7 @@ class Book
 
     public string Display()
     {
-        return $"Title: {Title}  Author: {Author} -  Publication year: {Year}";
+        return $"Title: {Title}  Author: {Author} -  {Year}";
     }
 }
 
@@ -60,7 +60,7 @@ class Program
 {
     static void Main(string[] args)
     {
-        List<Item> tasks = new List<Item>();
+        List<TodoItem> tasks = new List<TodoItem>();
         string choice = string.Empty;
         List<Book> books = new List<Book>();
         BookInfo(books);
@@ -112,7 +112,7 @@ class Program
         } while (choice != "6");
     }
 
-    static void AddTask(List<Item> tasks)
+    static void AddTask(List<TodoItem> tasks)
     {
         Console.Write("Please enter the task name: ");
         string title = Console.ReadLine() ?? "";
@@ -123,12 +123,12 @@ class Program
         }
         else
         {
-            tasks.Add(new Item(title.Trim()));
+            tasks.Add(new TodoItem(title.Trim()));
             Console.WriteLine("Task added.");
         }
     }
 
-    static void DisplayTask(List<Item> tasks)
+    static void DisplayTask(List<TodoItem> tasks)
     {
         if (tasks.Count == 0)
         {
@@ -143,7 +143,7 @@ class Program
         }
     }
 
-    static void MarkTask(List<Item> tasks)
+    static void MarkTask(List<TodoItem> tasks)
     {
         if (tasks.Count == 0)
         {
@@ -173,12 +173,12 @@ class Program
 
     // Problem 1
     // A feature for counting completed and incomplete items
-    static void CountTasks(List<Item> tasks)
+    static void CountTasks(List<TodoItem> tasks)
     {
         int finished = 0;
         int unfinished = 0;
 
-        foreach (Item task in tasks)
+        foreach (TodoItem task in tasks)
         {
             if (task.IsDone)
             {
@@ -197,7 +197,7 @@ class Program
 
     // Problem 2
     // A feature to rename tasks.
-    static void RenameTask(List<Item> tasks)
+    static void RenameTask(List<TodoItem> tasks)
     {
         if (tasks.Count == 0)
         {
@@ -234,20 +234,50 @@ class Program
         
     }
 
-    //problem3
+    // Problem3
+    // Display book information
     static void BookInfo(List<Book> books)
     {
         books.Add(new Book("A Woman", "Takeo Arisima", 1919));
         books.Add(new Book("L'après-midi d'un faune", "Stéphane Mallarmé", 1876));
         books.Add(new Book("Night on the Galactic Railroad", "Kenzi Miyazawa", 1934));
-        
+        books.Add(new Book("Chronicles of the Faceless - Twin children", "Yamori Mochiduki", 2009));
+        books.Add(new Book("The Great Passage", "Shion Miura", 2011));
     }
 
+    // Problem4
+    // A feature to display books published in or after the year 2000.
     static void BookDisplay(List<Book> books)
     {
-        foreach (Book book in books)
+        string choice = string.Empty;
+        Console.WriteLine("---------------------");
+        Console.WriteLine("1. Show only items published in or after 2000");
+        Console.WriteLine("2. Show all");
+        Console.Write("Please select an option: ");
+        choice = Console.ReadLine() ?? "";
+
+        switch (choice)
         {
-            Console.WriteLine(book.Display());
+            case "1":
+                foreach (Book book in books)
+                {
+                    if(book.Year > 2000){
+                        Console.WriteLine(book.Display());
+                    }
+                }
+
+                break;
+            case "2":
+                foreach (Book book in books)
+                {
+                    Console.WriteLine(book.Display());
+                }
+                break;
+
+            default:
+                Console.WriteLine("Please enter 1 or 2.");
+                break;
         }
+        
     }
 }
