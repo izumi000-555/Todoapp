@@ -1,112 +1,163 @@
 ﻿using System;
 using System.Collections.Generic;
 
+class Item
+{
+    public string Task { get; set; } = "";
+    public bool IsDone { get; set; }
+
+    public Item(string task)
+    {
+        Task = task;
+        IsDone = false;
+    }
+
+    public void MarkDone()
+    {
+        IsDone = true;
+    }
+
+    public void MarkNotDone()
+    {
+        IsDone = false;
+    }
+
+    public string Display()
+    {
+        if (IsDone)
+        {
+            return $"[x] {Task}";
+        }
+        return $"[ ] {Task}";
+    }
+}
+
 class Program
 {
     static void Main(string[] args)
     {
-        List<string> tasks = new List<string>();
-        List<bool> done = new List<bool>();
+        List<Item> tasks = new List<Item>();
         string choice = string.Empty;
 
-        // Problems 1
-        // Display a menu that repeats until 4 is entered.
         do
         {
             Console.WriteLine("1. Add task");
             Console.WriteLine("2. List tasks");
             Console.WriteLine("3. Mark task as done");
-            Console.WriteLine("4. Exit");
+            Console.WriteLine("4. Task summary");
+            Console.WriteLine("5. Exit");
             Console.Write("Please select an option: ");
-            choice = Console.ReadLine();
+            choice = Console.ReadLine() ?? "";
 
             switch (choice)
             {
-                // Problems 2
-                // Add a task to the list.
                 case "1":
-                    Console.Write("Please enter the task name: ");
-                    string task = Console.ReadLine();
-
-                    // Problems 4
-                    // Do not add empty task names.
-                    if (string.IsNullOrWhiteSpace(task))
-                    {
-                        Console.WriteLine("Task name cannot be empty.");
-                    }
-                    else
-                    {
-                        tasks.Add(task.Trim());
-                        done.Add(false);
-                        Console.WriteLine("Task added.");
-                    }
+                    AddTask(tasks);
                     break;
 
-                // Problems 2
-                // Display all tasks with numbers.
                 case "2":
-                    if (tasks.Count == 0)
-                    {
-                        Console.WriteLine("No tasks yet.");
-                    }
-                    else
-                    {
-                        // Problems 5
-                        // Display finished and unfinished tasks.
-                        for (int i = 0; i < tasks.Count; i++)
-                        {
-                            if (done[i] == true)
-                            {
-                                Console.WriteLine($"{i + 1}. [x] {tasks[i]}");
-                            }
-                            else
-                            {
-                                Console.WriteLine($"{i + 1}. [ ] {tasks[i]}");
-                            }
-                        }
-                    }
+                    DisplayTask(tasks);
                     break;
 
-                // Problems 3
-                // Mark a task as done by its number.
                 case "3":
-                    if (tasks.Count == 0)
-                    {
-                        Console.WriteLine("No tasks yet.");
-                    }
-                    else
-                    {
-                        Console.Write("Please enter the task number: ");
-                        string input = Console.ReadLine();
-                        int number;
-
-                        // Problems 4
-                        // Check if the task number is valid.
-                        if (!int.TryParse(input, out number))
-                        {
-                            Console.WriteLine("Please enter a valid number.");
-                        }
-                        else if (number < 1 || number > tasks.Count)
-                        {
-                            Console.WriteLine("Task number does not exist.");
-                        }
-                        else
-                        {
-                            done[number - 1] = true;
-                            Console.WriteLine("Task marked as done.");
-                        }
-                    }
+                    MarkTask(tasks);
                     break;
 
                 case "4":
+                    CountTasks(tasks);
+                    break;
+
+                case "5":
                     Console.WriteLine("Goodbye!");
                     break;
 
                 default:
-                    Console.WriteLine("Please enter 1, 2, 3, or 4.");
+                    Console.WriteLine("Please enter 1, 2, 3, 4, or 5.");
                     break;
             }
 
-        } while (choice != "4");
+        } while (choice != "5");
+    }
+
+    static void AddTask(List<Item> tasks)
+    {
+        Console.Write("Please enter the task name: ");
+        string title = Console.ReadLine() ?? "";
+
+        if (string.IsNullOrWhiteSpace(title))
+        {
+            Console.WriteLine("Task name cannot be empty.");
+        }
+        else
+        {
+            tasks.Add(new Item(title.Trim()));
+            Console.WriteLine("Task added.");
+        }
+    }
+
+    static void DisplayTask(List<Item> tasks)
+    {
+        if (tasks.Count == 0)
+        {
+            Console.WriteLine("No tasks yet.");
+        }
+        else
+        {
+            for (int i = 0; i < tasks.Count; i++)
+            {
+                Console.WriteLine($"{i + 1}. {tasks[i].Display()}");
+            }
+        }
+    }
+
+    static void MarkTask(List<Item> tasks)
+    {
+        if (tasks.Count == 0)
+        {
+            Console.WriteLine("No tasks yet.");
+        }
+        else
+        {
+            Console.Write("Please enter the task number: ");
+            string input = Console.ReadLine() ?? "";
+            int number;
+
+            if (!int.TryParse(input, out number))
+            {
+                Console.WriteLine("Please enter a valid number.");
+            }
+            else if (number < 1 || number > tasks.Count)
+            {
+                Console.WriteLine("Task number does not exist.");
+            }
+            else
+            {
+                tasks[number - 1].MarkDone();
+                Console.WriteLine("Task marked as done.");
+            }
+        }
+    }
+
+    // Problem 1
+    // Count finished and unfinished tasks.
+    static void CountTasks(List<Item> tasks)
+    {
+        int finished = 0;
+        int unfinished = 0;
+
+        foreach (Item task in tasks)
+        {
+            if (task.IsDone)
+            {
+                finished++;
+            }
+            else
+            {
+                unfinished++;
+            }
+        }
+
+        Console.WriteLine($"Finished tasks: {finished}");
+        Console.WriteLine($"Unfinished tasks: {unfinished}");
     }
 }
