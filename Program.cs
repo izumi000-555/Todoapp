@@ -30,7 +30,14 @@ class Item
         }
         return $"[ ] {Task}";
     }
+
+    public void Rename(string title)
+    {
+        Task = title;
+    }
 }
+
+
 
 class Program
 {
@@ -41,11 +48,13 @@ class Program
 
         do
         {
+            Console.WriteLine("---------------------");
             Console.WriteLine("1. Add task");
             Console.WriteLine("2. List tasks");
             Console.WriteLine("3. Mark task as done");
             Console.WriteLine("4. Task summary");
-            Console.WriteLine("5. Exit");
+            Console.WriteLine("5. rename a task");
+            Console.WriteLine("6. Exit");
             Console.Write("Please select an option: ");
             choice = Console.ReadLine() ?? "";
 
@@ -66,17 +75,21 @@ class Program
                 case "4":
                     CountTasks(tasks);
                     break;
-
+                
                 case "5":
+                    RenameTask(tasks);
+                    break;
+
+                case "6":
                     Console.WriteLine("Goodbye!");
                     break;
 
                 default:
-                    Console.WriteLine("Please enter 1, 2, 3, 4, or 5.");
+                    Console.WriteLine("Please enter 1, 2, 3, 4, 5 or 6.");
                     break;
             }
 
-        } while (choice != "5");
+        } while (choice != "6");
     }
 
     static void AddTask(List<Item> tasks)
@@ -139,7 +152,7 @@ class Program
     }
 
     // Problem 1
-    // Count finished and unfinished tasks.
+    // A feature for counting completed and incomplete items
     static void CountTasks(List<Item> tasks)
     {
         int finished = 0;
@@ -159,5 +172,45 @@ class Program
 
         Console.WriteLine($"Finished tasks: {finished}");
         Console.WriteLine($"Unfinished tasks: {unfinished}");
+    }
+
+
+    // Problem 2
+    // A feature to rename tasks.
+    static void RenameTask(List<Item> tasks)
+    {
+        if (tasks.Count == 0)
+        {
+            Console.WriteLine("No tasks yet.");
+        }
+        else
+        {
+        Console.WriteLine("Please enter the number of the task you would like to rename. ");     
+        string input = Console.ReadLine() ?? "";
+        int number;
+        if (!int.TryParse(input, out number))
+        {
+            Console.WriteLine("Please enter a valid number.");
+        }
+        else if (number < 1 || number > tasks.Count)
+        {
+            Console.WriteLine("Task number does not exist.");
+        }
+        else
+        {
+            Console.WriteLine("Please enter the new name. ");
+            string title = Console.ReadLine() ?? "";
+             if (string.IsNullOrWhiteSpace(title))
+            {
+                Console.WriteLine("Task name cannot be empty.");
+            }
+            else
+            {
+                tasks[number - 1].Rename(title.Trim());
+                Console.WriteLine("Changes have been completed.");
+            }
+        }
+        }
+        
     }
 }
