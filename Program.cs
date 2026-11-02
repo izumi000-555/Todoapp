@@ -6,9 +6,9 @@ class TodoItem
     public string Title { get; set; } = "";
     public bool IsDone { get; set; }
 
-    public TodoItem(string task)
+    public TodoItem(string title)
     {
-        Title = task;
+        Title = title;
         IsDone = false;
     }
 
@@ -63,7 +63,7 @@ class Program
         List<TodoItem> tasks = new List<TodoItem>();
         string choice = string.Empty;
         List<Book> books = new List<Book>();
-        BookInfo(books);
+        BookAdd(books);
         BookDisplay(books);
 
         do
@@ -89,13 +89,13 @@ class Program
                     break;
 
                 case "3":
-                    MarkTask(tasks);
+                    CompletedTask(tasks);
                     break;
 
                 case "4":
                     CountTasks(tasks);
                     break;
-                
+
                 case "5":
                     RenameTask(tasks);
                     break;
@@ -143,7 +143,7 @@ class Program
         }
     }
 
-    static void MarkTask(List<TodoItem> tasks)
+    static void CompletedTask(List<TodoItem> tasks)
     {
         if (tasks.Count == 0)
         {
@@ -205,38 +205,38 @@ class Program
         }
         else
         {
-        Console.WriteLine("Please enter the number of the task you would like to rename. ");     
-        string input = Console.ReadLine() ?? "";
-        int number;
-        if (!int.TryParse(input, out number))
-        {
-            Console.WriteLine("Please enter a valid number.");
-        }
-        else if (number < 1 || number > tasks.Count)
-        {
-            Console.WriteLine("Task number does not exist.");
-        }
-        else
-        {
-            Console.WriteLine("Please enter the new name. ");
-            string title = Console.ReadLine() ?? "";
-             if (string.IsNullOrWhiteSpace(title))
+            Console.WriteLine("Please enter the number of the task you would like to rename. ");
+            string input = Console.ReadLine() ?? "";
+            int number;
+            if (!int.TryParse(input, out number))
             {
-                Console.WriteLine("Task name cannot be empty.");
+                Console.WriteLine("Please enter a valid number.");
+            }
+            else if (number < 1 || number > tasks.Count)
+            {
+                Console.WriteLine("Task number does not exist.");
             }
             else
             {
-                tasks[number - 1].Rename(title.Trim());
-                Console.WriteLine("Changes have been completed.");
+                Console.WriteLine("Please enter the new name. ");
+                string title = Console.ReadLine() ?? "";
+                if (string.IsNullOrWhiteSpace(title))
+                {
+                    Console.WriteLine("Task name cannot be empty.");
+                }
+                else
+                {
+                    tasks[number - 1].Rename(title.Trim());
+                    Console.WriteLine("Changes have been completed.");
+                }
             }
         }
-        }
-        
+
     }
 
     // Problem3
     // Display book information
-    static void BookInfo(List<Book> books)
+    static void BookAdd(List<Book> books)
     {
         books.Add(new Book("A Woman", "Takeo Arisima", 1919));
         books.Add(new Book("L'après-midi d'un faune", "Stéphane Mallarmé", 1876));
@@ -261,7 +261,8 @@ class Program
             case "1":
                 foreach (Book book in books)
                 {
-                    if(book.Year > 2000){
+                    if (book.Year >= 2000)
+                    {
                         Console.WriteLine(book.Display());
                     }
                 }
@@ -278,6 +279,6 @@ class Program
                 Console.WriteLine("Please enter 1 or 2.");
                 break;
         }
-        
+
     }
 }
