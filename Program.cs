@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 
 class TodoItem
@@ -135,12 +136,13 @@ class Program
             Console.Write("Please enter the task number: ");
             string input = Console.ReadLine() ?? "";
             int number;
-
             if (!int.TryParse(input, out number))
             {
                 Console.WriteLine("Please enter a valid number.");
+                return;
             }
-            else if (number < 1 || number > tasks.Count)
+            bool judgement =IsValidTaskNumber(tasks, number);
+            if (judgement == true)
             {
                 Console.WriteLine("Task number does not exist.");
             }
@@ -192,10 +194,12 @@ class Program
             if (!int.TryParse(input, out number))
             {
                 Console.WriteLine("Please enter a valid number.");
+                return;
             }
-            else if (number < 1 || number > tasks.Count)
+            bool judgement =IsValidTaskNumber(tasks, number);
+            if (judgement == true)
             {
-                Console.WriteLine("Task number does not exist.");
+                Console.WriteLine("Task number does not exist. ");
             }
             else
             {
@@ -212,7 +216,18 @@ class Program
                 }
             }
         }
-
+    }
+    
+    static bool IsValidTaskNumber(List<TodoItem> tasks, int number)
+    {
+        if (number < 1 || number > tasks.Count)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
     }
 
     
