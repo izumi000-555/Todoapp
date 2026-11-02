@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-
+using System.IO;
+using System.Text.Json;
 
 
 class TodoItem
@@ -46,7 +47,7 @@ class Program
 {
     static void Main(string[] args)
     {
-        List<TodoItem> tasks = new List<TodoItem>();
+        List<TodoItem> tasks =LoadTasks();
         string choice = string.Empty;
        
 
@@ -117,6 +118,7 @@ class Program
         else
         {
             tasks.Add(new TodoItem(title.Trim()));
+            SaveTasks(tasks);
             Console.WriteLine("Task added.");
         }
     }
@@ -160,6 +162,7 @@ class Program
             else
             {
                 tasks[number - 1].MarkDone();
+                SaveTasks(tasks);
                 Console.WriteLine("Task marked as done.");
             }
         }
@@ -189,6 +192,7 @@ class Program
             else
             {
                 tasks[number - 1].MarkNotDone();
+                SaveTasks(tasks);
                 Console.WriteLine("Task marked as done.");
             }
         }
@@ -252,6 +256,7 @@ class Program
                 else
                 {
                     tasks[number - 1].Rename(title.Trim());
+                    SaveTasks(tasks);
                     Console.WriteLine("Changes have been completed.");
                 }
             }
@@ -270,5 +275,29 @@ class Program
         }
     }
 
-    
+    // Problem 5
+    // Load tasks from a JSON file
+    static List<TodoItem> LoadTasks()
+    {
+        if(!File.Exists("tasks.json")){
+            return new List<TodoItem>();
+        }
+
+        string json = File.ReadAllText("tasks.json");
+        List<TodoItem>? tasks = JsonSerializer.Deserialize<List<TodoItem>>(json);
+        if (tasks == null)
+        {
+            return new List<TodoItem>();
+        }
+
+        return tasks;
+    }
+
+    static void SaveTasks(List<TodoItem> tasks)
+    {
+        JsonSerializerOptions options = new JsonSerializerOptions();
+        options.WriteIndented = true;
+        string json = JsonSerializer.Serialize(tasks, options);
+        File.WriteAllText("tasks.json", json);
+    }
 }
