@@ -54,9 +54,10 @@ class Program
             Console.WriteLine("1. Add task");
             Console.WriteLine("2. List tasks");
             Console.WriteLine("3. Mark task as done");
-            Console.WriteLine("4. Task summary");
-            Console.WriteLine("5. rename a task");
-            Console.WriteLine("6. Exit");
+            Console.WriteLine("4. Mark task as not done");
+            Console.WriteLine("5. Task summary");
+            Console.WriteLine("6. rename a task");
+            Console.WriteLine("7. Exit");
             Console.Write("Please select an option: ");
             choice = Console.ReadLine() ?? "";
 
@@ -75,23 +76,27 @@ class Program
                     break;
 
                 case "4":
-                    CountTasks(tasks);
+                    MarkTaskNotDone(tasks);
                     break;
 
                 case "5":
-                    RenameTask(tasks);
+                    CountTasks(tasks);
                     break;
 
                 case "6":
+                    RenameTask(tasks);
+                    break;
+
+                case "7":
                     Console.WriteLine("Goodbye!");
                     break;
 
                 default:
-                    Console.WriteLine("Please enter 1, 2, 3, 4, 5 or 6.");
+                    Console.WriteLine("Please enter 1, 2, 3, 4, 5, 6 or 7.");
                     break;
             }
 
-        } while (choice != "6");
+        } while (choice != "7");
     }
 
     static void AddTask(List<TodoItem> tasks)
@@ -154,6 +159,35 @@ class Program
         }
     }
 
+    static void MarkTaskNotDone(List<TodoItem> tasks)
+    {
+        if (tasks.Count == 0)
+        {
+            Console.WriteLine("No tasks yet.");
+        }
+        else
+        {
+            Console.Write("Please enter the task number: ");
+            string input = Console.ReadLine() ?? "";
+            int number;
+            if (!int.TryParse(input, out number))
+            {
+                Console.WriteLine("Please enter a valid number.");
+                return;
+            }
+            bool judgement =IsValidTaskNumber(tasks, number);
+            if (judgement == true)
+            {
+                Console.WriteLine("Task number does not exist.");
+            }
+            else
+            {
+                tasks[number - 1].MarkNotDone();
+                Console.WriteLine("Task marked as done.");
+            }
+        }
+    }
+
     // Problem 1
     // A feature for counting completed and incomplete items
     static void CountTasks(List<TodoItem> tasks)
@@ -193,7 +227,7 @@ class Program
             int number;
             if (!int.TryParse(input, out number))
             {
-                Console.WriteLine("Please enter a valid number.");
+                Console.Write("Please enter a valid number.");
                 return;
             }
             bool judgement =IsValidTaskNumber(tasks, number);
@@ -217,7 +251,7 @@ class Program
             }
         }
     }
-    
+
     static bool IsValidTaskNumber(List<TodoItem> tasks, int number)
     {
         if (number < 1 || number > tasks.Count)
