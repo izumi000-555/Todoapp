@@ -2,6 +2,8 @@
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 
+
+
 class TodoItem
 {
     public string Title { get; set; } = "";
@@ -102,6 +104,10 @@ class Program
     static void AddTask(List<TodoItem> tasks)
     {
         Console.Write("Please enter the task name: ");
+        //Predict: what happens if you remove ?? yet in the?? "" from one line? 
+        //My prediction: A warning is issued because the value returned by ReadLine() could potentially be null.
+        //Remove it: A warning appears indicating that a value which could be null is being assigned to a non-nullable type.
+        //Explanation: Used to prevent errors caused by null values. ?? acts as a substitute for an if statement; if ReadLine() returns null, it provides "" instead.
         string title = Console.ReadLine() ?? "";
 
         if (string.IsNullOrWhiteSpace(title))
