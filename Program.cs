@@ -66,11 +66,11 @@ class Program
                     break;
 
                 case "2":
-                    DisplayTask(tasks);
+                    ListTasks(tasks);
                     break;
 
                 case "3":
-                    CompletedTask(tasks);
+                    MarkTaskDone(tasks);
                     break;
 
                 case "4":
@@ -109,7 +109,7 @@ class Program
         }
     }
 
-    static void DisplayTask(List<TodoItem> tasks)
+    static void ListTasks(List<TodoItem> tasks)
     {
         if (tasks.Count == 0)
         {
@@ -124,7 +124,7 @@ class Program
         }
     }
 
-    static void CompletedTask(List<TodoItem> tasks)
+    static void MarkTaskDone(List<TodoItem> tasks)
     {
         if (tasks.Count == 0)
         {
