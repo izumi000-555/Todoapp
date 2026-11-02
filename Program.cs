@@ -37,24 +37,7 @@ class TodoItem
     }
 }
 
-class Book
-{
-    public string Title { get; set; } = "";
-    public string Author { get; set; } = "";
-    public int Year { get; set; }
 
-    public Book(string title, string author, int year)
-    {
-        Title = title;
-        Author = author;
-        Year = year;
-    }
-
-    public string Display()
-    {
-        return $"Title: {Title}  Author: {Author} -  {Year}";
-    }
-}
 
 class Program
 {
@@ -62,9 +45,7 @@ class Program
     {
         List<TodoItem> tasks = new List<TodoItem>();
         string choice = string.Empty;
-        List<Book> books = new List<Book>();
-        BookAdd(books);
-        BookDisplay(books);
+       
 
         do
         {
@@ -234,51 +215,5 @@ class Program
 
     }
 
-    // Problem3
-    // Display book information
-    static void BookAdd(List<Book> books)
-    {
-        books.Add(new Book("A Woman", "Takeo Arisima", 1919));
-        books.Add(new Book("L'après-midi d'un faune", "Stéphane Mallarmé", 1876));
-        books.Add(new Book("Night on the Galactic Railroad", "Kenzi Miyazawa", 1934));
-        books.Add(new Book("Chronicles of the Faceless - Twin children", "Yamori Mochiduki", 2009));
-        books.Add(new Book("The Great Passage", "Shion Miura", 2011));
-    }
-
-    // Problem4
-    // A feature to display books published in or after the year 2000.
-    static void BookDisplay(List<Book> books)
-    {
-        string choice = string.Empty;
-        Console.WriteLine("---------------------");
-        Console.WriteLine("1. Show only items published in or after 2000");
-        Console.WriteLine("2. Show all");
-        Console.Write("Please select an option: ");
-        choice = Console.ReadLine() ?? "";
-
-        switch (choice)
-        {
-            case "1":
-                foreach (Book book in books)
-                {
-                    if (book.Year >= 2000)
-                    {
-                        Console.WriteLine(book.Display());
-                    }
-                }
-
-                break;
-            case "2":
-                foreach (Book book in books)
-                {
-                    Console.WriteLine(book.Display());
-                }
-                break;
-
-            default:
-                Console.WriteLine("Please enter 1 or 2.");
-                break;
-        }
-
-    }
+    
 }
