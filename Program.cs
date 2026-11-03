@@ -9,6 +9,7 @@ class TodoItem
 {
     public string Title { get; set; } = "";
     public bool IsDone { get; set; }
+    public DateTime? DueDate { get; set; }
 
     public TodoItem(string title)
     {
@@ -26,13 +27,26 @@ class TodoItem
         IsDone = false;
     }
 
+
     public string Display()
     {
+        string text = "";
+
         if (IsDone)
         {
-            return $"[x] {Title}";
+            text = $"[x] {Title}";
         }
-        return $"[ ] {Title}";
+        else
+        {
+            text = $"[ ] {Title}";
+        }
+
+        if (DueDate != null)
+        {
+            text = text + $" (due {DueDate.Value.ToString("yyyy-MM-dd")})";
+        }
+
+        return text;
     }
 
     public void Rename(string title)
@@ -47,9 +61,9 @@ class Program
 {
     static void Main(string[] args)
     {
-        List<TodoItem> tasks =LoadTasks();
+        List<TodoItem> tasks = LoadTasks();
         string choice = string.Empty;
-       
+
 
         do
         {
@@ -117,7 +131,29 @@ class Program
         }
         else
         {
-            tasks.Add(new TodoItem(title.Trim()));
+
+            Console.Write("Enter due date (yyyy-MM-dd, or leave empty): ");
+            string input = Console.ReadLine() ?? "";
+
+            DateTime? dueDate = null;
+
+            if (!string.IsNullOrWhiteSpace(input))
+            {
+                if (DateTime.TryParse(input, out DateTime date))
+                {
+                    dueDate = date.Date;
+                }
+                else
+                {
+                    Console.WriteLine("Invalid date.");
+                    return;
+                }
+            }
+
+            TodoItem item = new TodoItem(title.Trim());
+            item.DueDate = dueDate;
+
+            tasks.Add(item);
             SaveTasks(tasks);
             Console.WriteLine("Task added.");
         }
@@ -154,7 +190,7 @@ class Program
                 Console.WriteLine("Please enter a valid number.");
                 return;
             }
-            bool judgement =IsValidTaskNumber(tasks, number);
+            bool judgement = IsValidTaskNumber(tasks, number);
             if (judgement == true)
             {
                 Console.WriteLine("Task number does not exist.");
@@ -184,7 +220,7 @@ class Program
                 Console.WriteLine("Please enter a valid number.");
                 return;
             }
-            bool judgement =IsValidTaskNumber(tasks, number);
+            bool judgement = IsValidTaskNumber(tasks, number);
             if (judgement == true)
             {
                 Console.WriteLine("Task number does not exist.");
@@ -240,7 +276,7 @@ class Program
                 Console.Write("Please enter a valid number.");
                 return;
             }
-            bool judgement =IsValidTaskNumber(tasks, number);
+            bool judgement = IsValidTaskNumber(tasks, number);
             if (judgement == true)
             {
                 Console.WriteLine("Task number does not exist. ");
@@ -279,7 +315,8 @@ class Program
     // Load tasks from a JSON file
     static List<TodoItem> LoadTasks()
     {
-        if(!File.Exists("tasks.json")){
+        if (!File.Exists("tasks.json"))
+        {
             return new List<TodoItem>();
         }
 
