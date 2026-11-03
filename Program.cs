@@ -74,7 +74,9 @@ class Program
             Console.WriteLine("4. Mark task as not done");
             Console.WriteLine("5. Task summary");
             Console.WriteLine("6. rename a task");
-            Console.WriteLine("7. Exit");
+            Console.WriteLine("7. Search tasks");
+            Console.WriteLine("8. Show overdue tasks");
+            Console.WriteLine("9. Exit");
             Console.Write("Please select an option: ");
             choice = Console.ReadLine() ?? "";
 
@@ -105,6 +107,14 @@ class Program
                     break;
 
                 case "7":
+                    SearchTasks(tasks);
+                    break;
+
+                case "8":
+                    ShowOverdueTasks(tasks);
+                    break;
+
+                case "9":
                     Console.WriteLine("Goodbye!");
                     break;
 
@@ -113,7 +123,7 @@ class Program
                     break;
             }
 
-        } while (choice != "7");
+        } while (choice != "9");
     }
 
     static void AddTask(List<TodoItem> tasks)
@@ -337,4 +347,45 @@ class Program
         string json = JsonSerializer.Serialize(tasks, options);
         File.WriteAllText("tasks.json", json);
     }
+
+    // Problem 5
+    // Search tasks by a word.
+    static void SearchTasks(List<TodoItem> tasks)
+    {
+        Console.Write("Enter a word to search: ");
+        string word = Console.ReadLine() ?? "";
+
+        if (string.IsNullOrWhiteSpace(word))
+        {
+            Console.WriteLine("Please enter a word.");
+            return;
+        }
+
+        foreach (TodoItem item in tasks)
+        {
+            if (item.Title.ToLower().Contains(word.ToLower()))
+            {
+                Console.WriteLine(item.Display());
+            }
+        }
+    }
+
+
+    // Problem 5
+    // Show overdue tasks.
+    static void ShowOverdueTasks(List<TodoItem> tasks)
+    {
+        foreach (TodoItem item in tasks)
+        {
+            if (item.IsDone == false && item.DueDate != null)
+            {
+                if (item.DueDate.Value.Date < DateTime.Today)
+                {
+                    Console.WriteLine("! " + item.Display());
+                }
+            }
+        }
+    }
+
+
 }
