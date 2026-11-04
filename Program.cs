@@ -248,20 +248,8 @@ class Program
     // A feature for counting completed and incomplete items
     static void CountTasks(List<TodoItem> tasks)
     {
-        int finished = 0;
-        int unfinished = 0;
-
-        foreach (TodoItem task in tasks)
-        {
-            if (task.IsDone)
-            {
-                finished++;
-            }
-            else
-            {
-                unfinished++;
-            }
-        }
+        int finished = tasks.Count(t => t.IsDone);
+        int unfinished = tasks.Count(t => !t.IsDone);
 
         Console.WriteLine($"Finished tasks: {finished}");
         Console.WriteLine($"Unfinished tasks: {unfinished}");
@@ -330,14 +318,20 @@ class Program
             return new List<TodoItem>();
         }
 
-        string json = File.ReadAllText("tasks.json");
-        List<TodoItem>? tasks = JsonSerializer.Deserialize<List<TodoItem>>(json);
-        if (tasks == null)
+        try
         {
+            string json = File.ReadAllText("tasks.json");
+            List<TodoItem>? tasks =
+                JsonSerializer.Deserialize<List<TodoItem>>(json);
+
+            return tasks ?? new List<TodoItem>();
+        }
+        catch (JsonException)
+        {
+            Console.WriteLine(
+                "tasks.json is broken. Starting with an empty list.");
             return new List<TodoItem>();
         }
-
-        return tasks;
     }
 
     static void SaveTasks(List<TodoItem> tasks)
@@ -361,12 +355,13 @@ class Program
             return;
         }
 
-        foreach (TodoItem item in tasks)
+        List<TodoItem> matches = tasks
+            .Where(t => t.Title.Contains(word, StringComparison.OrdinalIgnoreCase))
+            .ToList();
+
+        foreach (TodoItem item in matches)
         {
-            if (item.Title.ToLower().Contains(word.ToLower()))
-            {
-                Console.WriteLine(item.Display());
-            }
+            Console.WriteLine(item.Display());
         }
     }
 
@@ -375,15 +370,14 @@ class Program
     // Show overdue tasks.
     static void ShowOverdueTasks(List<TodoItem> tasks)
     {
-        foreach (TodoItem item in tasks)
+        List<TodoItem> overdue = tasks
+            .Where(t => !t.IsDone && t.DueDate.HasValue && t.DueDate.Value.Date < DateTime.Today)
+            .OrderBy(t => t.DueDate)
+            .ToList();
+
+        foreach (TodoItem item in overdue)
         {
-            if (item.IsDone == false && item.DueDate != null)
-            {
-                if (item.DueDate.Value.Date < DateTime.Today)
-                {
-                    Console.WriteLine("! " + item.Display());
-                }
-            }
+            Console.WriteLine("! " + item.Display());
         }
     }
 
