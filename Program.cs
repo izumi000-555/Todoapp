@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.IO;
+﻿using System.Globalization;
 using System.Text.Json;
 
 
@@ -119,7 +116,7 @@ class Program
                     break;
 
                 default:
-                    Console.WriteLine("Please enter 1, 2, 3, 4, 5, 6 or 7.");
+                    Console.WriteLine("Please enter a number from 1 to 9.");
                     break;
             }
 
@@ -149,7 +146,7 @@ class Program
 
             if (!string.IsNullOrWhiteSpace(input))
             {
-                if (DateTime.TryParse(input, out DateTime date))
+                if (DateTime.TryParseExact(input, "yyyy-MM-dd", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime date))
                 {
                     dueDate = date.Date;
                 }
@@ -186,62 +183,26 @@ class Program
 
     static void MarkTaskDone(List<TodoItem> tasks)
     {
-        if (tasks.Count == 0)
+        if (!TryReadTaskNumber(tasks, out int number))
         {
-            Console.WriteLine("No tasks yet.");
+            return;
         }
-        else
-        {
-            Console.Write("Please enter the task number: ");
-            string input = Console.ReadLine() ?? "";
-            int number;
-            if (!int.TryParse(input, out number))
-            {
-                Console.WriteLine("Please enter a valid number.");
-                return;
-            }
-            bool judgement = IsValidTaskNumber(tasks, number);
-            if (judgement == true)
-            {
-                Console.WriteLine("Task number does not exist.");
-            }
-            else
-            {
-                tasks[number - 1].MarkDone();
-                SaveTasks(tasks);
-                Console.WriteLine("Task marked as done.");
-            }
-        }
+
+        tasks[number - 1].MarkDone();
+        SaveTasks(tasks);
+        Console.WriteLine("Task marked as done.");
     }
 
     static void MarkTaskNotDone(List<TodoItem> tasks)
     {
-        if (tasks.Count == 0)
+        if (!TryReadTaskNumber(tasks, out int number))
         {
-            Console.WriteLine("No tasks yet.");
+            return;
         }
-        else
-        {
-            Console.Write("Please enter the task number: ");
-            string input = Console.ReadLine() ?? "";
-            int number;
-            if (!int.TryParse(input, out number))
-            {
-                Console.WriteLine("Please enter a valid number.");
-                return;
-            }
-            bool judgement = IsValidTaskNumber(tasks, number);
-            if (judgement == true)
-            {
-                Console.WriteLine("Task number does not exist.");
-            }
-            else
-            {
-                tasks[number - 1].MarkNotDone();
-                SaveTasks(tasks);
-                Console.WriteLine("Task marked as done.");
-            }
-        }
+
+        tasks[number - 1].MarkNotDone();
+        SaveTasks(tasks);
+        Console.WriteLine("Task marked as not done.");
     }
 
     // Problem 1
@@ -260,55 +221,52 @@ class Program
     // A feature to rename tasks.
     static void RenameTask(List<TodoItem> tasks)
     {
+        if (!TryReadTaskNumber(tasks, out int number))
+        {
+            return;
+        }
+
+        Console.Write("Please enter the new name: ");
+        string title = Console.ReadLine() ?? "";
+
+        if (string.IsNullOrWhiteSpace(title))
+        {
+            Console.WriteLine("Task name cannot be empty.");
+            return;
+        }
+
+        tasks[number - 1].Rename(title.Trim());
+        SaveTasks(tasks);
+        Console.WriteLine("Changes have been completed.");
+    }
+
+    static bool TryReadTaskNumber(List<TodoItem> tasks, out int number)
+    {
+        number = 0;
+
         if (tasks.Count == 0)
         {
             Console.WriteLine("No tasks yet.");
-        }
-        else
-        {
-            Console.WriteLine("Please enter the number of the task you would like to rename. ");
-            string input = Console.ReadLine() ?? "";
-            int number;
-            if (!int.TryParse(input, out number))
-            {
-                Console.Write("Please enter a valid number.");
-                return;
-            }
-            bool judgement = IsValidTaskNumber(tasks, number);
-            if (judgement == true)
-            {
-                Console.WriteLine("Task number does not exist. ");
-            }
-            else
-            {
-                Console.WriteLine("Please enter the new name. ");
-                string title = Console.ReadLine() ?? "";
-                if (string.IsNullOrWhiteSpace(title))
-                {
-                    Console.WriteLine("Task name cannot be empty.");
-                }
-                else
-                {
-                    tasks[number - 1].Rename(title.Trim());
-                    SaveTasks(tasks);
-                    Console.WriteLine("Changes have been completed.");
-                }
-            }
-        }
-    }
-
-    static bool IsValidTaskNumber(List<TodoItem> tasks, int number)
-    {
-        if (number < 1 || number > tasks.Count)
-        {
-            return true;
-        }
-        else
-        {
             return false;
         }
-    }
 
+        Console.Write("Please enter the task number: ");
+        string input = Console.ReadLine() ?? "";
+
+        if (!int.TryParse(input, out number))
+        {
+            Console.WriteLine("Please enter a valid number.");
+            return false;
+        }
+
+        if (number < 1 || number > tasks.Count)
+        {
+            Console.WriteLine("Task number does not exist.");
+            return false;
+        }
+
+        return true;
+    }
     // Problem 5
     // Load tasks from a JSON file
     static List<TodoItem> LoadTasks()
